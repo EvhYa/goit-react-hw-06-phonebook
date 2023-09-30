@@ -5,20 +5,21 @@ import { removeContact } from 'redux/contactsSlice';
 import { useEffect, useState } from 'react';
 
 export function ContactList() {
-  const contacts = useSelector(getContacts);
+  const { items } = useSelector(getContacts);
   const filter = useSelector(getFilter);
 
-  const [filteredContacts, setFilteredContacts] = useState(contacts);
+  const [filteredContacts, setFilteredContacts] = useState(items);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setFilteredContacts(
-      contacts.filter(({ name }) =>
+      items.filter(({ name }) =>
         name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
       )
     );
-  }, [contacts, filter]);
+  }, [items, filter]);
+
 
   return (
     <Container>
