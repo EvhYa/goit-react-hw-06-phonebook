@@ -1,24 +1,24 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Container } from './Filter.styled';
-import PropTypes from 'prop-types';
+import { getFilter } from 'redux/selector';
+import { filterChange } from 'redux/filterSlice';
 
-export function Filter({ filter, handleChange }) {
+export function Filter() {
+  const value = useSelector(getFilter);
+  const dispatch = useDispatch();
+
   return (
     <Container>
       <label htmlFor="filter">Find contacts by name</label>
       <input
         type="text"
-        onChange={handleChange}
+        onChange={e => dispatch(filterChange(e.currentTarget.value))}
         id="filter"
         name="filter"
-        value={filter}
+        value={value}
         pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         title="Enter name you want to find"
       />
     </Container>
   );
 }
-
-Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-};

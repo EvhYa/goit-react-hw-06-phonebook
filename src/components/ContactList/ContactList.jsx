@@ -1,15 +1,33 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, List } from './ContactList.styled';
-import PropTypes from 'prop-types';
+import { getContacts, getFilter } from 'redux/selector';
+import { removeContact } from 'redux/contactsSlice';
+import { useEffect, useState } from 'react';
 
-export function ContactList({ contacts, removeItem }) {
+export function ContactList() {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const [filteredContacts, setFilteredContacts] = useState(contacts);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFilteredContacts(
+      contacts.filter(({ name }) =>
+        name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+      )
+    );
+  }, [contacts, filter]);
+
   return (
     <Container>
-      {contacts.length ? (
+      {filteredContacts.length ? (
         <List>
-          {contacts.map(({ id, name, number }) => (
+          {filteredContacts.map(({ id, name, number }) => (
             <li key={id}>
               {name} tel: {number}
-              <button type="button" onClick={() => removeItem(id)}>
+              <button type="button" onClick={() => dispatch(removeContact(id))}>
                 Delete
               </button>
             </li>
@@ -21,8 +39,3 @@ export function ContactList({ contacts, removeItem }) {
     </Container>
   );
 }
-
-ContactList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  removeItem: PropTypes.func.isRequired,
-};
