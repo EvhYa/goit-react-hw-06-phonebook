@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Button, Container, Form } from './ContactForm.styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selector';
 
 export function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const items = useSelector(getContacts);
 
   const dispatch = useDispatch();
 
@@ -31,9 +34,19 @@ export function ContactForm() {
       name: name,
       number: number,
     };
-    dispatch(addContact(contact));
-    setName('');
-    setNumber('');
+
+    const isExist = items.find(
+      ({ name }) =>
+        name.toLocaleLowerCase() === contact.name.toLocaleLowerCase()
+    );
+    if (isExist) {
+      window.alert('This name is already in the list');
+      return;
+    } else {
+      dispatch(addContact(contact));
+      setName('');
+      setNumber('');
+    }
   };
 
   return (
